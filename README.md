@@ -1,4 +1,10 @@
-# Commands
+# Serverless infrastructure
+This is the CDK code to deploy the backend infrastructure used for the front-end(not exists yet) of the [Local-Crontab](https://github.com/Sonic0/local-crontab) python module.  
+
+# STATUS
+IN PROGRESS, NOT WORKING yet
+
+# Commands example
 ```bash
 cdk synth --no-staging > template.yaml
 ```
