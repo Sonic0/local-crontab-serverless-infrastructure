@@ -1,0 +1,86 @@
+openapi: "3.0.3"
+info:
+  title: "local-crontab API"
+  description: Simple Rest API for public expose local-crontab python package
+  version: "0.1.0"
+  x-logo:
+    url: "{{ logo_link }}"
+    backgroundColor: "#FFFFFF"
+    altText: "Local Crontab converter, from Locale to UTC"
+    href: "https://github.com/Sonic0/local-crontab"
+
+x-amazon-apigateway-request-validators:
+  validate-all:
+    validateRequestBody: true
+    validateRequestParameters: true
+  validate-body-only:
+    validateRequestParameters: false
+    validateRequestBody: true
+  validate-params-only:
+    validateRequestBody: false
+    validateRequestParameters: true
+
+paths:
+  /utc-crontab:
+    post:
+      summary: Send a Convertion request, from Locale crontab to UTC
+      tags:
+        - cron
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CronConverterRequest"
+        required: true
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConvertCronResponse"
+      x-amazon-apigateway-request-validator: validate-body-only
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri: "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:{{ aws_lambda_name }}/invocations"
+        httpMethod: "POST"
+        credentials: "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/{{ aws_lambda_exec_role }}"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_TEXT"
+
+components:
+  schemas:
+    CronConverterRequest:
+      type: object
+      properties:
+        cron:
+          type: string
+          example:
+            scope: "0 10 * * *"
+        timezone:
+          type: string
+          default: "Europe/Rome"
+          example:
+            timezone: "Europe/Rome"
+      required:
+        - cron
+      example: {
+        "cron": "0 10 * * *",
+        "timezone": "Europe/Rome"
+      }
+
+    ConvertCronResponse:
+      type: object
+      properties:
+        body:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cron'
+          example: ["0 17 * 1-2 *", "0 17 1-13 3 *"]
+
+    Cron:
+      type: string
+      example: "0 10 * 1-2 *"

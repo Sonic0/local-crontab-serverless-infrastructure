@@ -1,0 +1,8 @@
+{
+   "apiName":"local-crontab-service",
+   "ApiVersion":"v1",
+   "ApiDocLogo":"https://raw.githubusercontent.com/Sonic0/local-crontab/main/logo.png",
+   "awsLambdaName": "local_crontab_service",
+   "awsLambdaExecRole": "aws_lambda_local_crontab_role",
+   "awsDefaultRegion": "eu-central-1"
+}
