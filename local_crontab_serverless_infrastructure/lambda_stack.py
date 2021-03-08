@@ -3,7 +3,7 @@ from aws_cdk import (
     aws_lambda as lambda_,
     aws_iam as iam
 )
-
+from aws_cdk.core import Tags
 
 class LambdaStack(core.Stack):
     def __init__(self, app: core.App, id: str, **kwargs):
@@ -14,7 +14,7 @@ class LambdaStack(core.Stack):
 
         # Create role for the lambda Edge function
         aws_lambda_role = iam.Role(
-            self, "aws_lambda_local_crontab_role",
+            self, "AwsLambdaLocalCrontabRole",
             role_name=aws_lambda_exec_role,
             assumed_by=iam.ServicePrincipal('lambda.amazonaws.com'),
             managed_policies=[
@@ -50,7 +50,7 @@ class LambdaStack(core.Stack):
         )
 
         aws_lambda = lambda_.Function(
-            self, "aws_lambda",
+            self, "AwsLambda",
             function_name=aws_lambda_name,
             code=aws_lambda_code,
             handler=f"{aws_lambda_name}.lambda_handler",
@@ -58,6 +58,15 @@ class LambdaStack(core.Stack):
             role=aws_lambda_role,
             description="Lambda Edge to authorize access to api documentations"
             )
+
+        aws_lambda_event_invoke_cnf = lambda_.EventInvokeConfig(
+            self, "AwsLambdaInvokeCnf",
+            function=aws_lambda,
+            max_event_age=core.Duration.seconds(60),
+            retry_attempts=1
+        )
+
+        Tags.of(aws_lambda).add("Scope", "local-crontab")
 
         # Output of resources
 

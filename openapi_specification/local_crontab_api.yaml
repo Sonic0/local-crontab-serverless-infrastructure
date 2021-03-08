@@ -41,10 +41,9 @@ paths:
                 $ref: "#/components/schemas/ConvertCronResponse"
       x-amazon-apigateway-request-validator: validate-body-only
       x-amazon-apigateway-integration:
-        type: "aws_proxy"
+        type: "aws"
         uri: "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:{{ aws_lambda_name }}/invocations"
         httpMethod: "POST"
-        credentials: "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/{{ aws_lambda_exec_role }}"
         responses:
           default:
             statusCode: "200"

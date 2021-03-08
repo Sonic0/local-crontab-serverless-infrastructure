@@ -24,6 +24,7 @@ setuptools.setup(
         "aws-cdk.core",
         "aws-cdk.aws_lambda",
         "aws-cdk.aws_apigateway",
+        "aws-cdk.aws_logs",
         "jinja2"
     ],
 
