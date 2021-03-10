@@ -12,7 +12,7 @@ class LambdaStack(core.Stack):
         aws_lambda_name = self.node.try_get_context("awsLambdaName")
         aws_lambda_exec_role = self.node.try_get_context("awsLambdaExecRole")
 
-        # Create role for the lambda Edge function
+        # Create role for the lambda function
         aws_lambda_role = iam.Role(
             self, "AwsLambdaLocalCrontabRole",
             role_name=aws_lambda_exec_role,

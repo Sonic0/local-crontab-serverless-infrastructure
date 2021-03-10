@@ -9,12 +9,15 @@ from .base_objects import Request
 
 
 class APIGatewayRequest(Request):
-    """API Gateway Request class."""
+    """API Gateway Request object. Input event already deserialized"""
 
     def __init__(self, event, context):
         super().__init__(event, context)
-        self._body_binary = base64.b64decode(event.get('body', None))
-        self._body = json.loads(self._body_binary.decode(encoding="utf-8", errors="strict"))
+        if event.get('isBase64Encoded', False):
+            self._body_binary = base64.b64decode(event.get('body', None))
+            self._body = json.loads(self._body_binary.decode(encoding="utf-8", errors="strict"))
+        else:
+            self._body = event.get('body', None)
         self._http_method = event.get('httpMethod', 'GET')
         self._resource = event.get('resource')
         self._path_parameters = event.get('pathParameters', {})
@@ -30,8 +33,7 @@ class APIGatewayRequest(Request):
     @functools.cached_property
     def headers(self):
         """Return request headers as namedtuple."""
-        payload = {inflection.underscore(
-            k): v for k, v, in self._headers.items()}
+        payload = {inflection.underscore(k): v for k, v, in self._headers.items()}
         HeadersTuple = namedtuple('HeadersTuple', sorted(payload))
         the_tuple = HeadersTuple(**payload)
         return the_tuple

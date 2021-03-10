@@ -34,7 +34,7 @@ def is_correct_http_method(request: APIGatewayRequest) -> bool:
         return correct
 
 
-# @load_json_body()  # auto-deserialize http body from JSON
+@load_json_body()  # auto-deserialize http body from JSON
 @dump_json_body()  # auto-serialization http body to JSON
 def lambda_handler(event, context: Dict) -> Union[Dict[Any, Any]]:
     """
