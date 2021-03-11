@@ -49,6 +49,8 @@ class LambdaStack(core.Stack):
             )
         )
 
+        # TODO: Add loggroup a scadenza breve
+
         aws_lambda = lambda_.Function(
             self, "AwsLambda",
             function_name=aws_lambda_name,

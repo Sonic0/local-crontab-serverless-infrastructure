@@ -54,12 +54,13 @@ class ApiGatewayStack(core.Stack):
             file.write(rendered_text)
 
 
-        # Create CloudWatch LogGroup destination
-        # aws_cloudwatch_api_loggroup = logs.LogGroup(
-        #     self, "LocalCrontabApiCloudWatchLog",
-        #     log_group_name=f'{aws_api_name}_logs',
-        #     removal_policy=core.RemovalPolicy.RETAIN,
-        #     retention=logs.RetentionDays.ONE_WEEK)
+        # Api gateway CloudWatch LogGroup destination
+        aws_cloudwatch_api_loggroup = logs.LogGroup(
+            self, "LocalCrontabApiCloudWatchLog",
+            log_group_name=f'{aws_api_name}_logs',
+            removal_policy=core.RemovalPolicy.RETAIN,
+            retention=logs.RetentionDays.ONE_WEEK
+        )
 
         # Create an API from OpenApi3 specification
         api_definition = apigw.AssetApiDefinition.from_asset(rendered_openapi3_spec)
@@ -67,9 +68,10 @@ class ApiGatewayStack(core.Stack):
         # Default Rest API stage
         aws_api_stage = apigw.StageOptions(
             stage_name=api_version,
+            data_trace_enabled=True,
             logging_level=apigw.MethodLoggingLevel.INFO,
             # access_log_destination=apigw.AccessLogDestinationConfig(destination_arn=aws_cloudwatch_api_loggroup.log_group_arn),
-            throttling_rate_limit=5,
+            throttling_rate_limit=2,
             throttling_burst_limit=1,
             description="Default Stage"
         )
@@ -83,4 +85,45 @@ class ApiGatewayStack(core.Stack):
             deploy_options=aws_api_stage
         )
 
+        # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/ApiKey.html
+        aws_rest_api_key = apigw.ApiKey(
+            self, "LocalCrontabApiKey",
+            api_key_name="local-crontab-api-key",
+            description="local-crontab service API Key",
+            enabled=True,
+            resources=[aws_rest_api]
+        )
+
+        # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/UsagePlan.html
+        #Rate:
+        # 2 requests per second Burst
+        # 1 requests Quota
+        # 100 requests per day
+        aws_rest_api_usage_plan = apigw.UsagePlan(
+            self, "LocalCrontabUsagePlan",
+            api_key=aws_rest_api_key,
+            api_stages=[apigw.UsagePlanPerApiStage(
+                api=aws_rest_api,
+                stage=aws_rest_api.deployment_stage,
+                # throttle=None # List of ThrottlingPerMethod. Not usefull in my case
+            )],
+            name="local-crontab-usage-plan",
+            description="local-crontab usage plan",
+            quota=apigw.QuotaSettings(
+                limit=100,
+                offset=0,
+                period=apigw.Period.DAY
+            ),
+            throttle=apigw.ThrottleSettings(
+                rate_limit=5,
+                burst_limit=1
+            )
+        )
+
         Tags.of(aws_rest_api).add("Scope", "local-crontab")
+
+        core.CfnOutput(
+            self, "ApiGatewayName",
+            description="Api Gateway name",
+            value=aws_rest_api.rest_api_name,
+        )
