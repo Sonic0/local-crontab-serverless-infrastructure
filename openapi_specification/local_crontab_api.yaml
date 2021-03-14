@@ -2,7 +2,7 @@ openapi: "3.0.3"
 info:
   title: "local-crontab API"
   description: Simple Rest API for public expose local-crontab python package
-  version: "0.1.0"
+  version: "1.0.0"
   x-logo:
     url: "{{ logo_link }}"
     backgroundColor: "#FFFFFF"
