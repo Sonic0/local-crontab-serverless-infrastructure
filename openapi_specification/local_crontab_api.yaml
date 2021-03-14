@@ -40,6 +40,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ConvertCronResponse"
+      security:
+        - api_key: [ ]
       x-amazon-apigateway-request-validator: validate-body-only
       x-amazon-apigateway-integration:
         type: "aws_proxy"
@@ -85,3 +87,9 @@ components:
     Cron:
       type: string
       example: "0 10 * 1-2 *"
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: x-api-key
+      in: header
