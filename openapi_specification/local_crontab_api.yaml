@@ -2,7 +2,7 @@ openapi: "3.0.3"
 info:
   title: "local-crontab API"
   description: Simple Rest API for public expose local-crontab python package
-  version: "1.0.0"
+  version: "1.0.1"
   x-logo:
     url: "{{ logo_link }}"
     backgroundColor: "#FFFFFF"
@@ -65,11 +65,11 @@ components:
             scope: "0 10 * * *"
         timezone:
           type: string
-          default: "Europe/Rome"
           example:
             timezone: "Europe/Rome"
       required:
         - cron
+        - timezone
       example: {
         "cron": "0 10 * * *",
         "timezone": "Europe/Rome"
