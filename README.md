@@ -1,7 +1,9 @@
 # Local-Crontab Serverless infrastructure
 This is the CDK code to deploy the backend infrastructure used for the front-end(not exists yet) of the [Local-Crontab](https://github.com/Sonic0/local-crontab) python module.  
 
-_Inseririre qui immagine infrastruttura_
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Sonic0/local-crontab-serverless-infrastructure/main/imgs/Local-Crontab-Infra.png" title="Local-Crontab-Infrastructure">
+</p>
 
 ## Try Lambda via SAM
 https://docs.aws.amazon.com/cdk/latest/guide/sam.html

@@ -28,7 +28,7 @@ class ApiGatewayStack(core.Stack):
         aws_default_region = self.node.try_get_context("awsDefaultRegion")
         aws_lambda_name = self.node.try_get_context("awsLambdaName")
 
-         # Create role with Invoke permission
+        # Create role with Invoke permission
         aws_api_role = iam.Role(
             self, "AwsAPIGILambdaInvokeRole",
             role_name=self.node.try_get_context("awsApiGatewayInvokeRole"),
@@ -62,6 +62,8 @@ class ApiGatewayStack(core.Stack):
             retention=logs.RetentionDays.ONE_WEEK
         )
 
+        # aws_api_stage_access_log_conf = apigw.AccessLogDestinationConfig(destination_arn=aws_cloudwatch_api_loggroup.log_group_arn)
+
         # Create an API from OpenApi3 specification
         api_definition = apigw.AssetApiDefinition.from_asset(rendered_openapi3_spec)
 
@@ -70,7 +72,7 @@ class ApiGatewayStack(core.Stack):
             stage_name=api_version,
             data_trace_enabled=True,
             logging_level=apigw.MethodLoggingLevel.INFO,
-            # access_log_destination=apigw.AccessLogDestinationConfig(destination_arn=aws_cloudwatch_api_loggroup.log_group_arn),
+            # access_log_destination=apigw.IAccessLogDestination(self),
             throttling_rate_limit=2,
             throttling_burst_limit=1,
             description="Default Stage"
@@ -85,6 +87,7 @@ class ApiGatewayStack(core.Stack):
             deploy_options=aws_api_stage
         )
 
+        # ==== ================================================#
         # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/ApiKey.html
         aws_rest_api_key = apigw.ApiKey(
             self, "LocalCrontabApiKey",
@@ -119,6 +122,45 @@ class ApiGatewayStack(core.Stack):
                 burst_limit=1
             )
         )
+
+        # ====================================================#
+        # ==== Code Example to create a CustomDomain Name ====#
+        # ====
+        # In my case I don't want to migrate this API from regional to EDGE, because of -->
+        #   For an API Gateway Regional custom domain name, you must request or import the certificate in the same Region as your API.
+        # ====================================================#
+
+        # aws_domain_cert = cert_manage.Certificate.from_certificate_arn(
+        #     self, "AwsRootDomainWilcardCert",
+        #     certificate_arn=self.node.try_get_context("awsDomainCertArn")
+        # )
+
+        # aws_rest_api_domain = apigw.DomainName(
+        #     self, "LocalCrontabApiDomain",
+        #     mapping=aws_rest_api,
+        #     domain_name=self.node.try_get_context("awsRoute53DomainName"),
+        #     endpoint_type=apigw.EndpointType.REGIONAL,
+        #     certificate=aws_domain_cert
+        # )
+
+        # aws_root_domain_zone = route53.HostedZone.from_lookup(
+        #     self, "AwsRoute53ExistingZone",
+        #     domain_name=self.node.try_get_context("awsRoute53DomainName"),
+        #     private_zone=False)
+        #
+        # route53.ARecord(
+        #     zone=aws_root_domain_zone,
+        #     record_name=self.node.try_get_context("awsRoute53SubDomainName"),
+        #     target=route53.RecordTarget(
+        #         alias_target=route53.AliasRecordTargetConfig(
+        #             dns_name=aws_rest_api_domain.domain_name,
+        #             hosted_zone_id=aws_root_domain_zone.hosted_zone_id
+        #         )
+        #     ),
+        #     comment="DNS record for Local-Crontab API"
+        # )
+
+        # =====================================================#
 
         Tags.of(aws_rest_api).add("Scope", "local-crontab")
 

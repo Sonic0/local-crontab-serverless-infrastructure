@@ -19,6 +19,7 @@ x-amazon-apigateway-request-validators:
   validate-params-only:
     validateRequestBody: false
     validateRequestParameters: true
+x-amazon-apigateway-api-key-source: HEADER
 
 paths:
   /utc-crontab:
