@@ -62,8 +62,6 @@ class ApiGatewayStack(core.Stack):
             retention=logs.RetentionDays.ONE_WEEK
         )
 
-        # aws_api_stage_access_log_conf = apigw.AccessLogDestinationConfig(destination_arn=aws_cloudwatch_api_loggroup.log_group_arn)
-
         # Create an API from OpenApi3 specification
         api_definition = apigw.AssetApiDefinition.from_asset(rendered_openapi3_spec)
 
@@ -72,7 +70,7 @@ class ApiGatewayStack(core.Stack):
             stage_name=api_version,
             data_trace_enabled=True,
             logging_level=apigw.MethodLoggingLevel.INFO,
-            # access_log_destination=apigw.IAccessLogDestination(self),
+            access_log_destination=apigw.LogGroupLogDestination(aws_cloudwatch_api_loggroup),
             throttling_rate_limit=2,
             throttling_burst_limit=1,
             description="Default Stage"
