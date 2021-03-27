@@ -1,5 +1,5 @@
 # Local-Crontab Serverless infrastructure
-This is the CDK code to deploy the backend infrastructure used for the front-end(not exists yet) of the [Local-Crontab](https://github.com/Sonic0/local-crontab) python module.  
+This is the CDK code to deploy the backend infrastructure used for the front-end of the [Local-Crontab](https://github.com/Sonic0/local-crontab) python module.  
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Sonic0/local-crontab-serverless-infrastructure/main/imgs/Local-Crontab-Infra.png" title="Local-Crontab-Infrastructure">
@@ -22,7 +22,7 @@ sam local invoke awslambda<ID> --profile <profile> --region <region> --event api
 ```
 
 ## Todo
-- Enable CORS --> [example1](https://github.com/aws-samples/aws-cdk-examples/blob/master/python/api-cors-lambda/app.py)
+- Complete CORS --> [example1](https://github.com/aws-samples/aws-cdk-examples/blob/master/python/api-cors-lambda/app.py)
 
 
 ## Starting with CDK Python projects!

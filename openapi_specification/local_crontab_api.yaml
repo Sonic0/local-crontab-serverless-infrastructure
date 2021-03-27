@@ -26,7 +26,7 @@ paths:
     post:
       summary: Send a Convertion request, from Locale crontab to UTC
       tags:
-        - cron
+        - CRON
       requestBody:
         content:
           application/json:
@@ -58,6 +58,7 @@ paths:
       description: |
         Enable CORS by returning correct headers
       tags:
+        - CRON
         - CORS
       responses:
         200:
