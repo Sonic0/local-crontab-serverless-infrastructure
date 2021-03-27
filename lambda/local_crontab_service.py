@@ -37,20 +37,19 @@ def is_correct_http_method(request: APIGatewayRequest) -> bool:
 @load_json_body()  # auto-deserialize http body from JSON
 @dump_json_body()  # auto-serialization http body to JSON
 def lambda_handler(event, context: Dict) -> Union[Dict[Any, Any]]:
-    """
-
-
+    """ The lambda entrypoint.
+    This lambda converts a localized crontab string into a list of UTC crontab.
     Parameters
     ----------
     event: dict, required
-
-
+        Event from AWS API Gateway. Into the body, it contains the string 'cron' and 'timezone'.
+        request body example --> {"cron": "0 10 * * *", "timezone": "Europe/Rome" }
     context: object, required
-
+        Context from AWS API Gateway. This lambda doesn't use it.
 
     Returns
     ------
-
+    api_response: JSON serialized response
     """
     log.debug(f"Received event from API G.: {json.dumps(event, indent=2)}")
     api_request = APIGatewayRequest(event, context)
