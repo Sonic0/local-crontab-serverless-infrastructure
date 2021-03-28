@@ -5,10 +5,13 @@ This is the CDK code to deploy the backend infrastructure used for the front-end
   <img src="https://raw.githubusercontent.com/Sonic0/local-crontab-serverless-infrastructure/main/imgs/Local-Crontab-Infra.png" title="Local-Crontab-Infrastructure">
 </p>
 
+## Use of Rest-API
+API endpoint and api-key are into the _config.json_ file in the [local-crontab-web-converter](https://github.com/Sonic0/local-crontab-web-converter). They are in clear-text . API calls are limited to 100/day 1/sec, so please do not abuse it.
+
 ## Try Lambda via SAM
 https://docs.aws.amazon.com/cdk/latest/guide/sam.html
 
-1. Run your AWS CDK app and create a AWS CloudFormation template.
+1. Run your AWS CDK app and create an AWS CloudFormation template.
 ```bash
 cdk synth --no-staging > template.yaml
 ```
@@ -39,3 +42,11 @@ sam local invoke awslambda<ID> --profile <profile> --region <region> --event api
  * `cdk docs`        open CDK documentation
 
 Enjoy!
+
+## Project info
+This repo is part of my projects group, called _Cron-Converter_.
+Its related repositories:
+- [cron-converter](https://github.com/Sonic0/cron-converter)
+- [local-crontab](https://github.com/Sonic0/local-crontab)
+- [local-crontab-ansible-filter](https://github.com/Sonic0/local-crontab-ansible-filter)
+- [local-crontab-web-converter](https://github.com/Sonic0/local-crontab-web-converter)
